@@ -103,9 +103,42 @@ const SCHEMA_BOXES: Schema[] = [
   { id: 's_b_71', name: 'Assets', parent_id: 's_b_65', field_id: 'f_box' },
   { id: 's_b_72', name: 'General Question', parent_id: 's_b_65', field_id: 'f_box' },
 ];
-const SCHEMA_FIELDS: Schema[] = [];
+const SCHEMA_FIELDS: Schema[] = [
+  {
+    id: 's_f_a_1',
+    name: 'Artist Name',
+    field_id: 'f_artist',
+    parent_id: 's_b_1',
+    placeholder: 'Search an artist name',
+  },
+  {
+    id: 's_f_a_2',
+    name: 'Official Tour Name',
+    field_id: 'f_str',
+    parent_id: 's_b_1',
+  },
+  {
+    id: 's_f_a_3',
+    name: 'Region',
+    field_id: 'f_city',
+    parent_id: 's_b_1',
+  },
+  {
+    id: 's_f_a_4',
+    name: 'Asset Link',
+    field_id: 'f_url',
+    parent_id: 's_b_1',
+  },
+];
 
-const FIELDS: Field[] = [{ id: 'f_box', type: 'box' }];
+const FIELDS: Field[] = [
+  { id: 'f_box', type: 'box' },
+  { id: 'f_str', type: 'string', value: '' },
+  { id: 'f_artist', type: 'string_artist_id', value: '' },
+  { id: 'f_city', type: 'string_city', value: '' },
+  { id: 'f_int', type: 'string_city', value: '' },
+  { id: 'f_url', type: 'string_url', value: '' },
+];
 
 export const SCHEMA_MOCK = {
   schemas: [...SCHEMA_BOXES, ...SCHEMA_FIELDS],

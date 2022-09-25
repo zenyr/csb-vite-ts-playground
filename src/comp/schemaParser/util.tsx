@@ -1,5 +1,5 @@
-import { ActionIcon, Card, Group, Menu, SimpleGrid, Text } from '@mantine/core';
-import { IconDots, IconFileZip, IconEye, IconTrash } from '@tabler/icons';
+import { ActionIcon, Badge, Box, Button, Card, Chip, Group, Menu } from '@mantine/core';
+import { IconEye, IconFileZip, IconTrash } from '@tabler/icons';
 import React from 'react';
 import { Field, ParsedSchema, Schema } from './model';
 
@@ -51,31 +51,39 @@ export const buildTree = (schemas: Schema[], fields: Field[]) => {
 
 export const treeToComponent = (
   parsedSchema: ParsedSchema,
+  // todo read flatState to observable component values
   flatState: Record<string, { value: unknown; confirmed: boolean }>,
 ) => {
   const traverse = (s: ParsedSchema) => {
+    const isBox = s.field.type === 'box';
     return (
-      <Card withBorder shadow="sm" radius="md" key={s.stableId} my="xs">
+      <Card withBorder={isBox} shadow={isBox ? 'sm' : void 0} radius="md" key={s.stableId} my="xs">
         <Card.Section withBorder inheritPadding py="xs">
           <Group position="apart">
-            <Text weight={500}>
-              {s.name} // {s.field.type} ({s.stableId}) ({s.copiable ? 'COPIABLE!' : 'Box'})
-            </Text>
-            <Menu withinPortal position="bottom-end" shadow="sm">
-              <Menu.Target>
-                <ActionIcon>
-                  <IconDots size={16} />
-                </ActionIcon>
-              </Menu.Target>
+            <Badge color={isBox ? 'gray' : 'green'}>{s.field.type}</Badge>
+            <Badge>{s.name}</Badge>
+            {s.asCopiable && (
+              <Chip readOnly checked>
+                Copiable
+              </Chip>
+            )}
+            <Box ml="auto">
+              <Menu withinPortal position="bottom-end" shadow="sm">
+                <Menu.Target>
+                  <Button variant="subtle" size="xs">
+                    {s.stableId}
+                  </Button>
+                </Menu.Target>
 
-              <Menu.Dropdown>
-                <Menu.Item icon={<IconFileZip size={14} />}>Download zip</Menu.Item>
-                <Menu.Item icon={<IconEye size={14} />}>Preview all</Menu.Item>
-                <Menu.Item icon={<IconTrash size={14} />} color="red">
-                  Delete all
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+                <Menu.Dropdown>
+                  <Menu.Item icon={<IconFileZip size={14} />}>Download zip</Menu.Item>
+                  <Menu.Item icon={<IconEye size={14} />}>Preview all</Menu.Item>
+                  <Menu.Item icon={<IconTrash size={14} />} color="red">
+                    Delete all
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Box>
           </Group>
         </Card.Section>
         <Card.Section pl="sm" pr="xs">
