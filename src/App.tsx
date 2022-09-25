@@ -54,13 +54,7 @@ function App() {
         <Header height={40} px="sm">
           <SDiv>
             <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
-              <Burger
-                opened={opened}
-                onClick={toggleMenu}
-                size="sm"
-                color={theme.colors.gray[6]}
-                mr="xs"
-              />
+              <Burger opened={opened} onClick={toggleMenu} size="sm" color={theme.colors.gray[6]} mr="xs" />
             </MediaQuery>
 
             <Title size="h4">CSB Typescript Vite playground</Title>
@@ -70,7 +64,7 @@ function App() {
     >
       <Router>
         {ROUTES.map(route => (
-          <route.app path={route.to} default={!route.to} />
+          <route.app key={route.to || ''} path={route.to} default={!route.to} />
         ))}
       </Router>
     </AppShell>
