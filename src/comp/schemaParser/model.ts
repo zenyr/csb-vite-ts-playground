@@ -10,43 +10,65 @@ import {
   string as s,
   enum as e,
 } from 'zod';
-
-const uuid = s().trim().uuid();
+const REG_UUID = /^[a-f0-9]{32}$/;
+const uuid = s().trim().regex(REG_UUID, 'Not a valid UUID (all lowercase, 0~f)');
 const _ = <T extends AnyZodObject>(t: T) => o({ id: uuid }).merge(t); // common field factory
 
-const schema = o({
+export const schemaValidator = o({
   id: uuid,
-  field_id: uuid,
-  name: uuid.nullable(),
+  field_type_id: uuid,
+  name: s(),
   parent_id: uuid.nullable(),
   placeholder: s().nullable().optional(),
   copiable: b().nullable().optional(), // true = converts parent to an array
   nullable: b().nullable().optional(),
   hint: s().nullable().optional(),
-  display_order: n().nullable().optional(),
+  display_order: n().int().nonnegative().nullable().optional(),
 });
 
-const field = dU('type', [
-  _(o({ type: l('box') })),
-  _(o({ type: l('string'), value: s().trim() })),
-  _(o({ type: l('text'), value: s() })),
-  _(o({ type: l('string_city'), value: s().trim() })),
-  _(o({ type: l('string_url'), value: s().trim().url() })),
-  _(o({ type: l('string_project_id'), value: uuid })),
-  _(o({ type: l('string_campaign_id'), value: uuid })),
-  _(o({ type: l('string_artist_id'), value: uuid })),
-  _(o({ type: l('array_string'), value: a(s()) })),
-  _(o({ type: l('boolean'), value: b().nullable() })), // null: "TBD"
-  _(o({ type: l('integer'), value: n().int().nonnegative() })),
-  _(o({ type: l('integer_unlimited'), value: n().int().gte(-1) })), // -1: unlimited
-  _(o({ type: l('number'), value: n().nonnegative() })),
-  _(o({ type: l('number_unlimited'), value: n().gte(-1) })), // -1: unlimited
-  _(o({ type: l('dropdown'), value: s(), items: a(s()) })),
-  _(o({ type: l('dropdown_custom'), value: s(), items: a(s()) })),
-  _(o({ type: l('radio'), value: s(), items: a(s()) })),
-  _(o({ type: l('radio_custom'), value: s(), items: a(s()) })),
-  _(o({ type: l('datetime'), value: s().trim() })),
-]);
+export const fieldValidator = o({
+  id: uuid,
+  type: e([
+    'box',
+    'string',
+    'url',
+    'integer',
+    'boolean',
+    'text',
+    'search_campaign',
+    'search_project',
+    'search_artist',
+    'search_city',
+    'array_string',
+    'datetime',
+    'integer_unlimited',
+    'radio_with_custom',
+    'dropdown',
+  ]),
+  options: a(s()).nullable(),
+});
+
+// export const fieldValidator = dU('type', [
+//   _(o({ type: l('box') })),
+//   _(o({ type: l('string'), value: s().trim() })),
+//   _(o({ type: l('text'), value: s() })),
+//   _(o({ type: l('url'), value: s().trim().url() })),
+//   _(o({ type: l('search_city'), value: s().trim() })),
+//   _(o({ type: l('search_project'), value: uuid })),
+//   _(o({ type: l('search_campaign'), value: uuid })),
+//   _(o({ type: l('search_artist'), value: uuid })),
+//   _(o({ type: l('array_string'), value: a(s()) })),
+//   _(o({ type: l('boolean'), value: b().nullable() })), // null: "TBD"
+//   _(o({ type: l('integer'), value: n().int().nonnegative() })),
+//   _(o({ type: l('integer_unlimited'), value: n().int().gte(-1) })), // -1: unlimited
+//   _(o({ type: l('number'), value: n().nonnegative() })),
+//   _(o({ type: l('number_unlimited'), value: n().gte(-1) })), // -1: unlimited
+//   _(o({ type: l('dropdown'), value: s(), options: a(s()) })),
+//   _(o({ type: l('dropdown_custom'), value: s(), options: a(s()) })),
+//   _(o({ type: l('radio'), value: s(), options: a(s()) })),
+//   _(o({ type: l('radio_with_custom'), value: s(), options: a(s()) })),
+//   _(o({ type: l('datetime'), value: s().trim() })),
+// ]);
 
 // s_id  << schema 의 id
 const payload = {
@@ -129,8 +151,8 @@ const payload = {
   },
 };
 
-export type Schema = zodInfer<typeof schema>;
-export type Field = zodInfer<typeof field>;
+export type Schema = zodInfer<typeof schemaValidator>;
+export type Field = zodInfer<typeof fieldValidator>;
 
 export type ParsedSchema = { stableId: string } & Schema & {
     children?: ParsedSchema[];
