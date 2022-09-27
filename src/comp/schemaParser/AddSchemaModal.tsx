@@ -45,7 +45,7 @@ export const AddSchemaModal = ({
 
   const handleSubmit = useCallback(
     ({ copiable, nullable, keep, name: _name, ...values }: typeof form.values) => {
-      const id = (isEdit && sId) || id128.Uuid4.generate().toRaw().toLowerCase();
+      const id = (isEdit && sId) || id128.Uuid.generate({ version: 4 }).toRaw().toLowerCase();
       const name = normalizeValue(_name);
       if (isEdit) {
         const schema = {
