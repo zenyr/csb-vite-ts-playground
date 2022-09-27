@@ -1,6 +1,14 @@
 import { Card, Group, Badge, Chip, Box, Menu, ActionIcon, Text, Button, Grid } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconArrowDown, IconArrowUp, IconCaretDown, IconCaretUp, IconPlus, IconTrash } from '@tabler/icons';
+import {
+  IconArrowDown,
+  IconArrowUp,
+  IconCaretDown,
+  IconCaretUp,
+  IconPencil,
+  IconPlus,
+  IconTrash,
+} from '@tabler/icons';
 import React, { FC, MouseEvent } from 'react';
 import { ParsedSchema } from './model';
 
@@ -38,13 +46,13 @@ export const SchemaBox = ({ s, ...props }: Props) => {
             </Badge>
           </Grid.Col>
           <Grid.Col span={7}>
-            <Group grow>
+            <Group grow align="center">
               <Button
                 variant="white"
                 onClick={isBox ? toggle : showEditSchemaModal}
                 data-id={s.id}
                 color={isBox ? 'gray' : 'blue'}
-                size={isBox ? 'md' : 'sm'}
+                size="sm"
                 leftIcon={isBox && (open ? <IconCaretUp /> : <IconCaretDown />)}
                 styles={{ inner: { justifyContent: 'flex-start' } }}
                 fullWidth
@@ -53,7 +61,7 @@ export const SchemaBox = ({ s, ...props }: Props) => {
               </Button>
 
               {s.asCopiable && (
-                <Chip readOnly checked>
+                <Chip readOnly checked size="xs">
                   Children Copiable
                 </Chip>
               )}
@@ -96,6 +104,9 @@ export const SchemaBox = ({ s, ...props }: Props) => {
                       Add
                     </Menu.Item>
                   )}
+                  <Menu.Item data-id={s.id} onClick={showEditSchemaModal} icon={<IconPencil size={14} />}>
+                    Edit
+                  </Menu.Item>
                   <Menu.Item
                     data-id={s.id}
                     onClick={showRemoveSchemaModal}

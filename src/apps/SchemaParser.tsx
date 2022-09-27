@@ -7,10 +7,21 @@ import { SCHEMA_MOCK } from '../comp/schemaParser/mock';
 import { Field, Schema } from '../comp/schemaParser/model';
 import { SchemaBox } from '../comp/schemaParser/SchemaBox';
 import { buildTree } from '../comp/schemaParser/util';
+import { useLocalStorage } from '@mantine/hooks';
 
 export const SchemaParserApp = (props: RouteComponentProps) => {
-  const [schemas, setSchemas] = useState(JSON.stringify(SCHEMA_MOCK.schemas, null, 1));
-  const [fields, setFields] = useState(JSON.stringify(SCHEMA_MOCK.fields, null, 1));
+  const [schemas, setSchemas] = useLocalStorage({
+    key: 'schemas',
+    defaultValue: JSON.stringify(SCHEMA_MOCK.schemas, null, 1),
+    deserialize: value => JSON.stringify(JSON.parse(value), null, 1),
+    serialize: value => JSON.stringify(JSON.parse(value)),
+  });
+  const [fields, setFields] = useLocalStorage({
+    key: 'fields',
+    defaultValue: JSON.stringify(SCHEMA_MOCK.fields, null, 1),
+    deserialize: value => JSON.stringify(JSON.parse(value), null, 1),
+    serialize: value => JSON.stringify(JSON.parse(value)),
+  });
 
   const aSchemas: Schema[] = useMemo(() => JSON.parse(schemas), [schemas]);
   const aFields: Field[] = useMemo(() => JSON.parse(fields), [fields]);
@@ -141,10 +152,9 @@ export const SchemaParserApp = (props: RouteComponentProps) => {
                 label="Schemas"
                 value={schemas}
                 onChange={setSchemas}
-                formatOnBlur
                 autosize
                 minRows={4}
-                maxRows={40}
+                maxRows={20}
               />
             </Grid.Col>
             <Grid.Col span={6}>
@@ -152,40 +162,38 @@ export const SchemaParserApp = (props: RouteComponentProps) => {
                 label="Fields"
                 value={fields}
                 onChange={setFields}
-                formatOnBlur
                 autosize
                 minRows={4}
-                maxRows={40}
+                maxRows={20}
               />
             </Grid.Col>
             <Grid.Col span={6}>
               <JsonInput
-                label="Schemas(Boxes)"
+                label="Schemas(Boxes), ReadOnly"
                 value={JSON.stringify(fBoxSchemas, null, 1)}
                 readOnly
-                formatOnBlur
                 autosize
                 minRows={4}
-                maxRows={40}
+                maxRows={20}
               />
             </Grid.Col>
             <Grid.Col span={6}>
               <JsonInput
-                label="Schemas(Fields)"
+                label="Schemas(Fields), ReadOnly"
                 value={JSON.stringify(fFieldSchemas, null, 1)}
                 readOnly
-                formatOnBlur
                 autosize
                 minRows={4}
-                maxRows={40}
+                maxRows={20}
               />
             </Grid.Col>
           </Grid>
         </Tabs.Panel>
         <Tabs.Panel value="parsed" pt="xs">
           <JsonInput
-            label="Parsed tree"
+            label="Parsed tree, ReadOnly"
             value={JSON.stringify(tree, null, 1)}
+            readOnly
             autosize
             minRows={4}
             maxRows={40}

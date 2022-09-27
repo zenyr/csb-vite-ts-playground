@@ -1,19 +1,9 @@
-import React, { FC, useCallback, useMemo } from 'react';
-import { Field, Schema, schemaValidator } from './model';
+import { Alert, Button, Group, Modal, Select, Stack, Switch, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
-import {
-  Alert,
-  Button,
-  Group,
-  Modal,
-  SegmentedControl,
-  Select,
-  Stack,
-  Switch,
-  TextInput,
-} from '@mantine/core';
-import { Uuid4 } from 'id128';
 import { IconPlus } from '@tabler/icons';
+import { Uuid4 } from 'id128';
+import React, { useCallback, useMemo } from 'react';
+import { Field, Schema, schemaValidator } from './model';
 
 type Props = {
   isEdit: boolean;
@@ -25,6 +15,9 @@ type Props = {
   onCreate(schema: Schema): void;
   onEdit(sId: string, schema: Omit<Schema, 'id' | 'parent_id'>): void;
 };
+
+const normalizeValue = (value: string) =>
+  value.trim().replace('DateTime', 'Datetime').replace('PreSale', 'Pre-sale');
 
 export const AddSchemaModal = ({
   fields,
@@ -51,12 +44,14 @@ export const AddSchemaModal = ({
   });
 
   const handleSubmit = useCallback(
-    ({ copiable, nullable, keep, ...values }: typeof form.values) => {
+    ({ copiable, nullable, keep, name: _name, ...values }: typeof form.values) => {
       const id = (isEdit && sId) || Uuid4.generate().toRaw().toLowerCase();
+      const name = normalizeValue(_name);
       if (isEdit) {
         const schema = {
           copiable: copiable || void 0,
           nullable: nullable || void 0,
+          name,
           ...values,
         };
         onEdit(id, schema);
@@ -66,6 +61,7 @@ export const AddSchemaModal = ({
           parent_id: sId,
           copiable: copiable || void 0,
           nullable: nullable || void 0,
+          name,
           ...values,
         };
         onCreate(schema);
