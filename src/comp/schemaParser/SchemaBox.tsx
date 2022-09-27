@@ -54,9 +54,9 @@ export const SchemaBox = ({ s, ...props }: Props) => {
 
   return (
     <Card withBorder={isBox} shadow={isBox ? 'sm' : void 0} radius={isBox ? 'md' : 0} my="xs" p={0} px="xs">
-      <Card.Section withBorder inheritPadding pb={1}>
+      <Card.Section withBorder={open} inheritPadding pb={1}>
         <Grid align="center">
-          <Grid.Col span={1}>
+          <Grid.Col span={2}>
             <Tooltip
               label={[s.field.type, s.field.options?.join(', ')].filter(Boolean).join(' / ')}
               withinPortal
@@ -66,8 +66,8 @@ export const SchemaBox = ({ s, ...props }: Props) => {
               </Badge>
             </Tooltip>
           </Grid.Col>
-          <Grid.Col span={7}>
-            <Group grow align="center">
+          <Grid.Col span={8}>
+            <Group grow align="center" position="apart">
               <Button
                 variant="white"
                 onClick={isBox ? toggle : void 0}
@@ -111,8 +111,8 @@ export const SchemaBox = ({ s, ...props }: Props) => {
               )}
             </Group>
           </Grid.Col>
-          <Grid.Col span={4}>
-            <Group ml="auto" noWrap>
+          <Grid.Col span={2}>
+            <Group noWrap position="right">
               <Tooltip label="Move Up" withinPortal>
                 <ActionIcon
                   data-id={s.id}
@@ -137,9 +137,11 @@ export const SchemaBox = ({ s, ...props }: Props) => {
               </Tooltip>
               <Menu withinPortal position="bottom-end" shadow="sm">
                 <Menu.Target>
-                  <Badge color="dark" variant="dot">
-                    {s.stableId}
-                  </Badge>
+                  <Tooltip label={s.stableId} withinPortal>
+                    <Button color="dark" variant="subtle" size="xs" radius="lg">
+                      {s.stableId.split('|').slice(1).join('|')}
+                    </Button>
+                  </Tooltip>
                 </Menu.Target>
                 <Menu.Dropdown>
                   {isBox && (
