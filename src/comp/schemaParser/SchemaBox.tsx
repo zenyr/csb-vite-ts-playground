@@ -57,9 +57,14 @@ export const SchemaBox = ({ s, ...props }: Props) => {
       <Card.Section withBorder inheritPadding pb={1}>
         <Grid align="center">
           <Grid.Col span={1}>
-            <Badge fullWidth color={isBox ? 'gray' : 'green'}>
-              {s.field.type}
-            </Badge>
+            <Tooltip
+              label={[s.field.type, s.field.options?.join(', ')].filter(Boolean).join(' / ')}
+              withinPortal
+            >
+              <Badge fullWidth color={isBox ? 'gray' : 'green'}>
+                {s.field.type}
+              </Badge>
+            </Tooltip>
           </Grid.Col>
           <Grid.Col span={7}>
             <Group grow align="center">
