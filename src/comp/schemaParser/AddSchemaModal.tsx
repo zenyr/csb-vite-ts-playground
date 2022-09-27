@@ -1,7 +1,7 @@
 import { Alert, Button, Group, Modal, Select, Stack, Switch, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { IconPlus } from '@tabler/icons';
-import { Uuid4 } from 'id128';
+import id128 from 'id128';
 import React, { useCallback, useMemo } from 'react';
 import { Field, Schema, schemaValidator } from './model';
 
@@ -45,7 +45,7 @@ export const AddSchemaModal = ({
 
   const handleSubmit = useCallback(
     ({ copiable, nullable, keep, name: _name, ...values }: typeof form.values) => {
-      const id = (isEdit && sId) || Uuid4.generate().toRaw().toLowerCase();
+      const id = (isEdit && sId) || id128.Uuid4.generate().toRaw().toLowerCase();
       const name = normalizeValue(_name);
       if (isEdit) {
         const schema = {
