@@ -1,20 +1,8 @@
-import {
-  AppShell,
-  Burger,
-  Button,
-  Header,
-  MediaQuery,
-  Navbar,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import styled from '@emotion/styled';
+import { AppShell, Burger, Header, MediaQuery, Navbar, Title, useMantineTheme } from '@mantine/core';
 import { Router } from '@reach/router';
 import React, { useCallback, useState } from 'react';
-import { IndexApp } from './apps/Index';
 import { LeftNav } from './comp/Nav';
-import styled from '@emotion/styled';
-import { SchemaParserApp } from './apps/SchemaParser';
 import { ROUTES } from './routes';
 
 const SDiv = styled.div`
@@ -31,9 +19,7 @@ function App() {
   return (
     <AppShell
       styles={{
-        main: {
-          background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
-        },
+        main: { background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
       }}
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"

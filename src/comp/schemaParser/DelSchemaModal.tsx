@@ -14,7 +14,9 @@ export const DelSchemaModal = ({ onClose, onDelete, opened, sId }: Props) => {
     <Modal opened={opened} onClose={onClose} title={'Delete a schema'}>
       <Stack>
         <Group position="apart">
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose} variant="outline">
+            Cancel
+          </Button>
 
           <Button onClick={() => (sId && onDelete(sId), onClose())} leftIcon={<IconTrash />} color="red">
             Delete

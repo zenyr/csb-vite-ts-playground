@@ -6,7 +6,7 @@ import { DelSchemaModal } from '../comp/schemaParser/DelSchemaModal';
 import { SCHEMA_MOCK } from '../comp/schemaParser/mock';
 import { Field, Schema } from '../comp/schemaParser/model';
 import { SchemaBox } from '../comp/schemaParser/SchemaBox';
-import { buildTree } from '../comp/schemaParser/util';
+import { safeBuildTree } from '../comp/schemaParser/util';
 import { useLocalStorage } from '@mantine/hooks';
 
 export const SchemaParserApp = (props: RouteComponentProps) => {
@@ -35,6 +35,7 @@ export const SchemaParserApp = (props: RouteComponentProps) => {
     [aSchemas],
   );
 
+  // Modal states
   const [addSId, setAddSId] = useState<string | null>(null);
   const [delSId, setDelSId] = useState<string | null>(null);
   const [editSId, setEditSId] = useState<string | null>(null);
@@ -55,6 +56,7 @@ export const SchemaParserApp = (props: RouteComponentProps) => {
     setEditSId(id);
   }, []);
 
+  // Schema modification
   const addSchema = useCallback(
     (schema: Schema) => setSchemas(schemas => JSON.stringify([...JSON.parse(schemas), schema], null, 1)),
     [],
@@ -119,9 +121,9 @@ export const SchemaParserApp = (props: RouteComponentProps) => {
 
   const editingSchema = useMemo(() => aSchemas.find(s => s.id === editSId), [aSchemas, editSId]);
 
-  const [tree, setTree] = useState(buildTree(aSchemas, aFields));
+  const [tree, setTree] = useState(safeBuildTree(aSchemas, aFields));
 
-  useEffect(() => setTree(buildTree(aSchemas, JSON.parse(fields))), [schemas, fields]);
+  useEffect(() => setTree(safeBuildTree(aSchemas, JSON.parse(fields))), [schemas, fields]);
 
   return (
     <>
@@ -201,16 +203,20 @@ export const SchemaParserApp = (props: RouteComponentProps) => {
         </Tabs.Panel>
 
         <Tabs.Panel value="component" pt="xs">
-          <SchemaBox
-            s={tree}
-            flatState={{}}
-            showAddSchemaModal={handleASModalClick}
-            showRemoveSchemaModal={handleRSModalClick}
-            showEditSchemaModal={handleESModalClick}
-            moveSchema={handleMoveSchema}
-            canMoveUp={false}
-            canMoveDown={false}
-          />
+          {tree && 'error' in tree ? (
+            'Tree is broken'
+          ) : (
+            <SchemaBox
+              s={tree}
+              flatState={{}}
+              showAddSchemaModal={handleASModalClick}
+              showRemoveSchemaModal={handleRSModalClick}
+              showEditSchemaModal={handleESModalClick}
+              moveSchema={handleMoveSchema}
+              canMoveUp={false}
+              canMoveDown={false}
+            />
+          )}
         </Tabs.Panel>
       </Tabs>
     </>

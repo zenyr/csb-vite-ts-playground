@@ -50,3 +50,12 @@ export const buildTree = (schemas: Schema[], fields: Field[]) => {
   }
   return result;
 };
+
+export const safeBuildTree = (schemas: Schema[], fields: Field[]) => {
+  try {
+    return buildTree(schemas, fields);
+  } catch (e) {
+    if (e instanceof Error) return { error: e.message };
+    return { error: 'Unknown Error' };
+  }
+};

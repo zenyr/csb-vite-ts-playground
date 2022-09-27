@@ -1,4 +1,17 @@
-import { Card, Group, Badge, Chip, Box, Menu, ActionIcon, Text, Button, Grid } from '@mantine/core';
+import {
+  Card,
+  Group,
+  Badge,
+  Chip,
+  Box,
+  Menu,
+  ActionIcon,
+  Text,
+  Button,
+  Grid,
+  Indicator,
+  Tooltip,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
   IconArrowDown,
@@ -11,6 +24,9 @@ import {
 } from '@tabler/icons';
 import React, { FC, MouseEvent } from 'react';
 import { ParsedSchema } from './model';
+
+const STYLES_INDICATOR = { indicator: { lineHeight: '18px' } };
+const STYLES_BUTTON = { inner: { justifyContent: 'flex-start' } };
 
 type Props = {
   s: ParsedSchema;
@@ -38,7 +54,7 @@ export const SchemaBox = ({ s, ...props }: Props) => {
 
   return (
     <Card withBorder={isBox} shadow={isBox ? 'sm' : void 0} radius={isBox ? 'md' : 0} my="xs" p={0} px="xs">
-      <Card.Section withBorder inheritPadding>
+      <Card.Section withBorder inheritPadding pb={1}>
         <Grid align="center">
           <Grid.Col span={1}>
             <Badge fullWidth color={isBox ? 'gray' : 'green'}>
@@ -49,24 +65,42 @@ export const SchemaBox = ({ s, ...props }: Props) => {
             <Group grow align="center">
               <Button
                 variant="white"
-                onClick={isBox ? toggle : showEditSchemaModal}
+                onClick={isBox ? toggle : void 0}
                 data-id={s.id}
-                color={isBox ? 'gray' : 'blue'}
+                color={isBox ? 'gray' : 'dark'}
                 size="sm"
                 leftIcon={isBox && (open ? <IconCaretUp /> : <IconCaretDown />)}
-                styles={{ inner: { justifyContent: 'flex-start' } }}
+                styles={STYLES_BUTTON}
                 fullWidth
               >
-                {s.name}
+                <Box pr="lg">
+                  <Indicator
+                    label={childCount}
+                    size={20}
+                    showZero={false}
+                    dot={false}
+                    styles={STYLES_INDICATOR}
+                    color="gray"
+                    offset={7}
+                  >
+                    {s.name}
+                    {'\u2000\u2000\u2000'}
+                  </Indicator>
+                </Box>
               </Button>
 
               {s.asCopiable && (
-                <Chip readOnly checked size="xs">
+                <Chip readOnly checked={false} size="xs" color="blue" variant="filled">
                   Children Copiable
                 </Chip>
               )}
+              {s.copiable && (
+                <Chip readOnly checked={false} size="xs" color="teal" variant="filled">
+                  Copiable
+                </Chip>
+              )}
               {s.nullable && (
-                <Chip readOnly checked>
+                <Chip readOnly checked={false} size="xs" color="dark" variant="filled">
                   Nullable
                 </Chip>
               )}
@@ -74,24 +108,28 @@ export const SchemaBox = ({ s, ...props }: Props) => {
           </Grid.Col>
           <Grid.Col span={4}>
             <Group ml="auto" noWrap>
-              <ActionIcon
-                data-id={s.id}
-                data-down=""
-                onClick={moveSchema}
-                variant="transparent"
-                disabled={!canMoveUp}
-              >
-                <IconArrowUp />
-              </ActionIcon>
-              <ActionIcon
-                data-id={s.id}
-                data-down="1"
-                onClick={moveSchema}
-                variant="transparent"
-                disabled={!canMoveDown}
-              >
-                <IconArrowDown />
-              </ActionIcon>
+              <Tooltip label="Move Up" withinPortal>
+                <ActionIcon
+                  data-id={s.id}
+                  data-down=""
+                  onClick={moveSchema}
+                  variant="transparent"
+                  disabled={!canMoveUp}
+                >
+                  <IconArrowUp />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip label="Move Down" withinPortal>
+                <ActionIcon
+                  data-id={s.id}
+                  data-down="1"
+                  onClick={moveSchema}
+                  variant="transparent"
+                  disabled={!canMoveDown}
+                >
+                  <IconArrowDown />
+                </ActionIcon>
+              </Tooltip>
               <Menu withinPortal position="bottom-end" shadow="sm">
                 <Menu.Target>
                   <Badge color="dark" variant="dot">

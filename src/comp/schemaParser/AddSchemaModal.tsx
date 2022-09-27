@@ -109,15 +109,17 @@ export const AddSchemaModal = ({
             </Alert>
           )}
           <Group position="apart">
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={onClose} variant="outline">
+              Close
+            </Button>
             <Switch
-              color="red"
+              color="teal"
               onLabel="Yes"
               offLabel="No"
               label="KEEP OPENED"
               {...form.getInputProps('keep', { type: 'checkbox' })}
             />
-            <Button type="submit" leftIcon={<IconPlus />}>
+            <Button type="submit" leftIcon={<IconPlus />} color={isEdit ? 'green' : 'teal'}>
               {isEdit ? 'Edit' : 'Add'}
             </Button>
           </Group>
